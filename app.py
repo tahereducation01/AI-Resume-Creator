@@ -103,33 +103,49 @@ def view_resume(resume_id):
     conn = get_db()
     cur = conn.cursor()
 
-    resume = cur.execute("SELECT * FROM resumes WHERE id = ?", (resume_id,)).fetchone()
-    if not resume:
+    resume_row = cur.execute(
+        "SELECT * FROM resumes WHERE id = ?", (resume_id,)
+    ).fetchone()
+
+    if not resume_row:
         abort(404)
 
-    resume = dict(resume)
-    resume['skills'] = ', '.join([s['skill'] for s in cur.execute(
+    # Convert main resume row to dict
+    resume = dict(resume_row)
+
+    # Skills
+    skills_rows = cur.execute(
         "SELECT skill FROM skills WHERE resume_id = ?", (resume_id,)
-    ).fetchall()])
+    ).fetchall()
+    resume['skills'] = ', '.join([row['skill'] for row in skills_rows])
 
-    resume['education'] = (cur.execute(
+    # Education
+    edu_row = cur.execute(
         "SELECT description FROM education WHERE resume_id = ?", (resume_id,)
-    ).fetchone() or {}).get('description', '')
+    ).fetchone()
+    resume['education'] = edu_row['description'] if edu_row else ''
 
-    resume['experience'] = (cur.execute(
+    # Experience
+    exp_row = cur.execute(
         "SELECT description FROM experiences WHERE resume_id = ?", (resume_id,)
-    ).fetchone() or {}).get('description', '')
+    ).fetchone()
+    resume['experience'] = exp_row['description'] if exp_row else ''
 
-    resume['certifications'] = (cur.execute(
+    # Certifications
+    cert_row = cur.execute(
         "SELECT title FROM certifications WHERE resume_id = ?", (resume_id,)
-    ).fetchone() or {}).get('title', '')
+    ).fetchone()
+    resume['certifications'] = cert_row['title'] if cert_row else ''
 
-    resume['activities'] = (cur.execute(
+    # Activities
+    act_row = cur.execute(
         "SELECT activity FROM activities WHERE resume_id = ?", (resume_id,)
-    ).fetchone() or {}).get('activity', '')
+    ).fetchone()
+    resume['activities'] = act_row['activity'] if act_row else ''
 
     conn.close()
     return render_template('resume.html', **resume)
+
 
 # ---------------- DELETE RESUME ----------------
 @app.route('/resume/delete/<int:resume_id>', methods=['POST'])
