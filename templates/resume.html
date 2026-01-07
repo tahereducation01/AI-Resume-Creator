@@ -308,42 +308,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Resume Preview Sidebar -->
-        <div class="resume-preview-sidebar">
-            <h4>Resume Preview</h4>
-            <div class="preview-container">
-                <div class="preview-page">
-                    <!-- Mini preview of the resume -->
-                    <div class="preview-header">
-                        <div class="preview-avatar">
-                            {% if profile_image_url %}
-                                <img src="{{ profile_image_url }}" alt="{{ name }}">
-                            {% else %}
-                                <i class="fas fa-user"></i>
-                            {% endif %}
-                        </div>
-                        <div class="preview-info">
-                            <h5>{{ name }}</h5>
-                            <p>{{ headline[:30] }}...</p>
-                        </div>
-                    </div>
-                    <div class="preview-skills">
-                        {% for skill in skills.split(',')[:4] %}
-                            {% if skill.strip() %}
-                            <span class="preview-skill">{{ skill.strip()[:10] }}</span>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="preview-actions">
-                <button class="preview-btn" onclick="togglePreview()">
-                    <i class="fas fa-eye"></i>
-                    Full Preview
-                </button>
-            </div>
-        </div>
     </main>
 
     <!-- Success Toast -->
