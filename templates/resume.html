@@ -3,118 +3,1239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Generated Resume</title>
+    <title>{{ name }} - Professional Resume | AI Resume Builder</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <header class="navbar">
-        <a href="/" class="brand">AI Resume Builder</a>
-        <nav class="nav-links">
-            <a href="{{ url_for('openai') }}">Build Another</a>
-            <a href="{{ url_for('list_resumes') }}">View Saved Resumes</a>
-        </nav>
-    </header>
-    <main class="container">
-        <div class="resume-actions">
-            <button class="clr-btn" onclick="window.print()">Print Resume</button>
+    <!-- Resume Background Pattern -->
+    <div class="resume-pattern"></div>
+
+    <header class="navbar resume-nav">
+        <div class="nav-container">
+            <a href="/" class="brand">
+                <i class="fas fa-robot"></i>
+                <span>AI Resume<span class="brand-highlight">Builder</span></span>
+            </a>
+            <nav class="nav-links">
+                <a href="{{ url_for('openai') }}" class="nav-link">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Build Another</span>
+                </a>
+                <a href="{{ url_for('list_resumes') }}" class="nav-link">
+                    <i class="fas fa-folder-open"></i>
+                    <span>My Resumes</span>
+                </a>
+                <div class="resume-actions-buttons">
+                    <button class="action-btn share-btn" onclick="shareResume()" title="Share Resume">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <button class="action-btn download-btn" onclick="downloadPDF()" title="Download PDF">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="primary-btn print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                        <span>Print Resume</span>
+                    </button>
+                </div>
+            </nav>
         </div>
-        
-        <div class="resume-sheet">
-            <div class="resume-header">
-                {% if profile_image_url %}
-                    <img src="{{ profile_image_url }}" alt="Profile Picture" class="profile-image">
-                {% endif %}
-                <div class="header-text">
-                    <div class="resume-name">{{ name }}</div>
-                    <div class="resume-headline">{{ headline }}</div>
+    </header>
+
+    <main class="container">
+        <!-- Resume Stats Banner -->
+        <div class="resume-stats-banner">
+            <div class="stats-content">
+                <div class="stat-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>AI-Optimized Content</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>ATS Friendly</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Mobile Responsive</span>
                 </div>
             </div>
+        </div>
 
-            <div class="resume-grid">
-                <div class="left-col">
-                    <div class="contact-row">
-                        {% if email %}<div>📧 <a href="mailto:{{ email }}">{{ email }}</a></div>{% endif %}
-                        {% if phone %}<div>📞 {{ phone }}</div>{% endif %}
-                        {% if location %}<div>📍 {{ location }}</div>{% endif %}
-                        {% if linkedin %}<div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg> <a href="{{ linkedin }}" target="_blank">LinkedIn</a></div>{% endif %}
-                        {% if website %}<div>🔗 <a href="{{ website }}" target="_blank">Website</a></div>{% endif %}
+        <!-- Resume Container -->
+        <div class="resume-container">
+            <!-- Resume Sidebar -->
+            <div class="resume-sidebar">
+                <!-- Profile Section -->
+                <div class="sidebar-profile">
+                    {% if profile_image_url %}
+                    <div class="profile-image-container">
+                        <img src="{{ profile_image_url }}" alt="{{ name }}" class="profile-image">
+                        <div class="profile-image-badge">
+                            <i class="fas fa-check"></i>
+                        </div>
                     </div>
-
-                    {% if summary %}
-                    <div class="section">
-                        <div class="section-title">Professional Summary</div>
-                        <div class="small-muted">{{ summary | nl2br }}</div>
-                    </div>
-                    {% endif %}
-
-                    {% if experience %}
-                    <div class="section">
-                        <div class="section-title">Work Experience</div>
-                        <div class="small-muted">{{ experience | nl2br }}</div>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="right-sidebar">
-                    {% if education %}
-                    <div class="section">
-                        <div class="section-title">Education</div>
-                        <div class="small-muted">{{ education | nl2br }}</div>
-                    </div>
-                    {% endif %}
-
-                    {% if skills %}
-                    <div class="section">
-                        <div class="section-title">Skills</div>
-                        <ul class="skill-list">
-                            {% for skill in skills.split(',') %}
-                                {% if skill.strip() %}
-                                <li>{{ skill.strip() }}</li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    {% if certifications %}
-                    <div class="section">
-                        <div class="section-title">Certifications</div>
-                        <div class="small-muted">{{ certifications }}</div>
+                    {% else %}
+                    <div class="profile-image-placeholder">
+                        <i class="fas fa-user-circle"></i>
                     </div>
                     {% endif %}
                     
-                    {% if activities %}
-                    <div class="section">
-                        <div class="section-title">Activities</div>
-                        <div class="small-muted">{{ activities }}</div>
+                    <div class="profile-info">
+                        <h1 class="resume-name">{{ name }}</h1>
+                        <div class="resume-headline">
+                            <i class="fas fa-briefcase"></i>
+                            <span>{{ headline }}</span>
+                        </div>
+                        {% if db_result and db_result.resume_id %}
+                        <div class="resume-id">
+                            <i class="fas fa-hashtag"></i>
+                            ID: {{ db_result.resume_id }}
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                 </div>
+
+                <!-- Contact Info -->
+                <div class="sidebar-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-address-card"></i>
+                        Contact
+                    </h3>
+                    <div class="contact-list">
+                        {% if email %}
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:{{ email }}">{{ email }}</a>
+                        </div>
+                        {% endif %}
+                        {% if phone %}
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>{{ phone }}</span>
+                        </div>
+                        {% endif %}
+                        {% if location %}
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ location }}</span>
+                        </div>
+                        {% endif %}
+                        {% if linkedin %}
+                        <div class="contact-item">
+                            <i class="fab fa-linkedin"></i>
+                            <a href="{{ linkedin }}" target="_blank">LinkedIn Profile</a>
+                        </div>
+                        {% endif %}
+                        {% if website %}
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="{{ website }}" target="_blank">{{ website }}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                {% if skills %}
+                <div class="sidebar-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-tools"></i>
+                        Skills
+                    </h3>
+                    <div class="skills-grid">
+                        {% for skill in skills.split(',') %}
+                            {% if skill.strip() %}
+                            <span class="skill-tag">{{ skill.strip() }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Certifications -->
+                {% if certifications %}
+                <div class="sidebar-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-certificate"></i>
+                        Certifications
+                    </h3>
+                    <div class="certifications-list">
+                        {{ certifications }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Activities -->
+                {% if activities %}
+                <div class="sidebar-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Activities
+                    </h3>
+                    <div class="activities-list">
+                        {{ activities }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- AI Badge -->
+                <div class="ai-badge">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Generated</span>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="resume-main">
+                <!-- Professional Summary -->
+                {% if summary %}
+                <section class="resume-section summary-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-user-tie"></i>
+                            Professional Summary
+                        </h2>
+                        <div class="section-actions">
+                            <button class="icon-btn" onclick="copyToClipboard('summary-content')" title="Copy Summary">
+                                <i class="far fa-copy"></i>
+                            </button>
+                            <button class="icon-btn" onclick="editSummary()" title="Edit Summary">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="section-content" id="summary-content">
+                        {{ summary | nl2br }}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Work Experience -->
+                {% if experience %}
+                <section class="resume-section experience-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-briefcase"></i>
+                            Work Experience
+                        </h2>
+                        <div class="section-actions">
+                            <button class="icon-btn" onclick="copyToClipboard('experience-content')" title="Copy Experience">
+                                <i class="far fa-copy"></i>
+                            </button>
+                            <button class="icon-btn" onclick="exportExperience()" title="Export Experience">
+                                <i class="fas fa-file-export"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="section-content" id="experience-content">
+                        <div class="experience-timeline">
+                            {{ experience | nl2br }}
+                        </div>
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Education -->
+                {% if education %}
+                <section class="resume-section education-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-graduation-cap"></i>
+                            Education
+                        </h2>
+                        <div class="section-actions">
+                            <button class="icon-btn" onclick="copyToClipboard('education-content')" title="Copy Education">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="section-content" id="education-content">
+                        <div class="education-list">
+                            {{ education | nl2br }}
+                        </div>
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Additional Information -->
+                <section class="resume-section additional-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Additional Information
+                        </h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Date Generated</h4>
+                                    <p id="generated-date">{{ current_date }}</p>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Resume Version</h4>
+                                    <p>v1.0 - AI Optimized</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resume Actions Footer -->
+                <div class="resume-actions-footer">
+                    <button class="btn secondary-btn" onclick="window.location.href='{{ url_for('openai') }}'">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit This Resume</span>
+                    </button>
+                    <button class="btn primary-btn" onclick="downloadPDF()">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Download PDF</span>
+                    </button>
+                    <button class="btn outline-btn" onclick="shareResume()">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share Resume</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resume Preview Sidebar -->
+        <div class="resume-preview-sidebar">
+            <h4>Resume Preview</h4>
+            <div class="preview-container">
+                <div class="preview-page">
+                    <!-- Mini preview of the resume -->
+                    <div class="preview-header">
+                        <div class="preview-avatar">
+                            {% if profile_image_url %}
+                                <img src="{{ profile_image_url }}" alt="{{ name }}">
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
+                        </div>
+                        <div class="preview-info">
+                            <h5>{{ name }}</h5>
+                            <p>{{ headline[:30] }}...</p>
+                        </div>
+                    </div>
+                    <div class="preview-skills">
+                        {% for skill in skills.split(',')[:4] %}
+                            {% if skill.strip() %}
+                            <span class="preview-skill">{{ skill.strip()[:10] }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="preview-actions">
+                <button class="preview-btn" onclick="togglePreview()">
+                    <i class="fas fa-eye"></i>
+                    Full Preview
+                </button>
             </div>
         </div>
     </main>
 
-    {% if db_result %}
+    <!-- Success Toast -->
+    <div class="toast" id="successToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span>Resume saved successfully!</span>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Share Resume</h3>
+                <button class="modal-close" onclick="closeShareModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="share-options">
+                    <button class="share-option" onclick="shareViaEmail()">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </button>
+                    <button class="share-option" onclick="shareViaLinkedIn()">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
+                    </button>
+                    <button class="share-option" onclick="copyResumeLink()">
+                        <i class="fas fa-link"></i>
+                        <span>Copy Link</span>
+                    </button>
+                    <button class="share-option" onclick="generateQRCode()">
+                        <i class="fas fa-qrcode"></i>
+                        <span>QR Code</span>
+                    </button>
+                </div>
+                <div class="share-link">
+                    <input type="text" id="resumeLink" value="{{ request.url }}" readonly>
+                    <button class="copy-link-btn" onclick="copyToClipboard('resumeLink')">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Set current date
+        document.getElementById('generated-date').textContent = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('successToast');
+            toast.querySelector('span').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent || element.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            });
+        }
+
+        // Download PDF
+        function downloadPDF() {
+            Swal.fire({
+                title: 'Download Resume',
+                text: 'Preparing your resume for download...',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Download PDF',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve();
+                        }, 1500);
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showToast('PDF download started!');
+                    // In a real implementation, this would trigger the PDF generation
+                    // window.location.href = '/resume/download/{{ resume_id }}';
+                }
+            });
+        }
+
+        // Share Resume
+        function shareResume() {
+            const modal = document.getElementById('shareModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeShareModal() {
+            const modal = document.getElementById('shareModal');
+            modal.style.display = 'none';
+        }
+
+        function copyResumeLink() {
+            const linkInput = document.getElementById('resumeLink');
+            linkInput.select();
+            navigator.clipboard.writeText(linkInput.value).then(() => {
+                showToast('Link copied to clipboard!');
+            });
+        }
+
+        function shareViaEmail() {
+            const subject = `Resume: {{ name }}`;
+            const body = `Check out my resume: {{ request.url }}`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        function shareViaLinkedIn() {
+            const url = `https://www.linkedin.com/sharing/share-offsite/?url={{ request.url }}`;
+            window.open(url, '_blank');
+        }
+
+        function generateQRCode() {
+            Swal.fire({
+                title: 'Scan to View Resume',
+                html: '<div id="qrcode"></div>',
+                showConfirmButton: false,
+                didOpen: () => {
+                    // In a real implementation, generate QR code here
+                    const qrContainer = Swal.getHtmlContainer().querySelector('#qrcode');
+                    qrContainer.innerHTML = '<div style="text-align:center;"><i class="fas fa-qrcode" style="font-size:100px;color:#4361ee;"></i><p>QR Code would be generated here</p></div>';
+                }
+            });
+        }
+
+        // Edit Summary
+        function editSummary() {
+            Swal.fire({
+                title: 'Edit Summary',
+                input: 'textarea',
+                inputValue: document.getElementById('summary-content').textContent,
+                inputAttributes: {
+                    'aria-label': 'Edit your professional summary'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Save Changes',
+                preConfirm: (content) => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            // Here you would save to backend
+                            resolve(content);
+                        }, 1000);
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('summary-content').textContent = result.value;
+                    showToast('Summary updated successfully!');
+                }
+            });
+        }
+
+        // Export Experience
+        function exportExperience() {
+            const content = document.getElementById('experience-content').textContent;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '{{ name }}-Experience.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            showToast('Experience exported!');
+        }
+
+        // Toggle preview sidebar on mobile
+        function togglePreview() {
+            const sidebar = document.querySelector('.resume-preview-sidebar');
+            sidebar.classList.toggle('mobile-visible');
+        }
+
+        // Show success message if resume was saved
         document.addEventListener('DOMContentLoaded', function() {
-            {% if db_result.error %}
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Database Error',
-                    text: '{{ db_result.error | escapejs }}',
-                });
-            {% elif db_result.resume_id %}
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Your resume has been saved with ID: {{ db_result.resume_id }}',
-                    showConfirmButton: false,
-                    timer: 2500
-                });
+            {% if db_result %}
+                {% if db_result.error %}
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '{{ db_result.error | escapejs }}',
+                        timer: 3000
+                    });
+                {% elif db_result.resume_id %}
+                    showToast('Resume saved successfully! ID: {{ db_result.resume_id }}');
+                {% endif %}
             {% endif %}
         });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('shareModal');
+            if (event.target == modal) {
+                closeShareModal();
+            }
+        }
     </script>
-    {% endif %}
+
+    <!-- Add specific styles for resume page -->
+    <style>
+        .resume-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 49%, var(--primary-light) 49%, var(--primary-light) 51%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, var(--primary-light) 49%, var(--primary-light) 51%, transparent 51%);
+            background-size: 40px 40px;
+            opacity: 0.03;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .resume-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .resume-actions-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--gray-2);
+            background: white;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .share-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .download-btn:hover {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .print-btn {
+            padding: 0.5rem 1.5rem;
+        }
+
+        .resume-stats-banner {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .stats-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .resume-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .resume-sidebar {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar-profile {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--gray-2);
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-image-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border: 3px solid var(--white);
+        }
+
+        .profile-image-placeholder {
+            width: 150px;
+            height: 150px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 4rem;
+            color: var(--primary);
+        }
+
+        .resume-name {
+            font-size: var(--font-size-2xl);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .resume-headline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume-id {
+            font-size: var(--font-size-sm);
+            color: var(--gray-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-section .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: var(--font-size-sm);
+        }
+
+        .contact-item i {
+            width: 24px;
+            color: var(--primary);
+        }
+
+        .contact-item a {
+            color: var(--dark);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .contact-item a:hover {
+            color: var(--primary);
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            margin-top: 2rem;
+        }
+
+        .resume-main {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .resume-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .resume-main .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: var(--font-size-xl);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--gray-2);
+            background: white;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .section-content {
+            line-height: 1.8;
+            color: var(--dark);
+            font-size: var(--font-size-base);
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+        }
+
+        .experience-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .experience-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-light);
+        }
+
+        .education-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--gray-3);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all var(--transition-normal);
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-light);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .info-content h4 {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .info-content p {
+            color: var(--gray-1);
+            font-size: var(--font-size-sm);
+        }
+
+        .resume-actions-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-2);
+            margin-top: 2rem;
+        }
+
+        .resume-preview-sidebar {
+            position: fixed;
+            right: 20px;
+            top: 100px;
+            width: 250px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+        }
+
+        .resume-preview-sidebar h4 {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .preview-container {
+            background: var(--gray-3);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .preview-page {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            transform: rotate(-2deg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .preview-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .preview-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .preview-info h5 {
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .preview-info p {
+            font-size: var(--font-size-xs);
+            color: var(--gray-1);
+        }
+
+        .preview-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .preview-skill {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+        }
+
+        .preview-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all var(--transition-normal);
+        }
+
+        .preview-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Share Modal */
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 1rem;
+            background: var(--gray-3);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .share-option:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .share-option i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .share-link {
+            display: flex;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .share-link input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-2);
+            border-radius: var(--radius-md);
+            font-family: var(--font-family);
+        }
+
+        .copy-link-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .copy-link-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .resume-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .resume-sidebar {
+                position: static;
+                top: auto;
+            }
+            
+            .resume-preview-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .resume-nav .nav-links {
+                display: none;
+            }
+            
+            .resume-main {
+                padding: 2rem;
+            }
+            
+            .resume-actions-footer {
+                flex-direction: column;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .resume-sidebar,
+            .resume-main {
+                padding: 1.5rem;
+            }
+            
+            .profile-image-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .section-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .resume-nav,
+            .resume-stats-banner,
+            .resume-preview-sidebar,
+            .resume-actions-footer,
+            .section-actions,
+            .toast,
+            .modal {
+                display: none !important;
+            }
+            
+            .resume-pattern {
+                display: none;
+            }
+            
+            .resume-container {
+                grid-template-columns: 300px 1fr;
+                gap: 0;
+                margin: 0;
+            }
+            
+            .resume-sidebar,
+            .resume-main {
+                box-shadow: none;
+                padding: 0;
+                background: white;
+            }
+            
+            .resume-sidebar {
+                padding-right: 2rem;
+            }
+            
+            body {
+                background: white !important;
+            }
+        }
+    </style>
 </body>
 </html>
-

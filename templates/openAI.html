@@ -3,120 +3,542 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Builder - AI</title>
+    <title>Build Your Resume | AI Resume Builder</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar">
+        <div class="progress-fill"></div>
+    </div>
+
     <header class="navbar">
-        <a href="/" class="brand">AI Resume Builder</a>
-        <nav class="nav-links">
-            <a href="{{ url_for('list_resumes') }}">View Saved Resumes</a>
-        </nav>
+        <div class="nav-container">
+            <a href="/" class="brand">
+                <i class="fas fa-robot"></i>
+                <span>AI Resume<span class="brand-highlight">Builder</span></span>
+            </a>
+            <nav class="nav-links">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{{ url_for('list_resumes') }}" class="nav-link">
+                    <i class="fas fa-folder-open"></i>
+                    <span>My Resumes</span>
+                </a>
+            </nav>
+        </div>
     </header>
+
     <main class="container">
-        <div class="page-header">
-            <h1>Resume Builder</h1>
-            <p>Fill out the fields below to generate your professional resume.</p>
+        <!-- Form Header -->
+        <div class="form-header">
+            <div class="header-content">
+                <h1>Create Your Professional Resume</h1>
+                <p>Fill in your details and let our AI craft the perfect resume for you</p>
+            </div>
+            <div class="form-steps">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <span>Personal Info</span>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <span>Experience</span>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <span>Education</span>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <span>Skills</span>
+                </div>
+            </div>
         </div>
 
-        <div class="form-container">
-            <form action="/openai" method="post" class="resume-form" enctype="multipart/form-data">
-                
-                <fieldset class="form-section">
-                    <legend>Personal Details</legend>
-                    <div class="form-row">
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" required placeholder="e.g. Jane Doe">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="headline">Headline</label>
-                            <input type="text" id="headline" name="headline" required placeholder="e.g. Senior Software Engineer">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.5rem;">
-                            <div>
-                                <label for="profile_image">Profile Picture (Optional)</label>
-                                <input type="file" id="profile_image" name="profile_image" accept="image/png, image/jpeg, image/gif" onchange="previewImage(event)">
-                            </div>
-                            <img id="imagePreview" src="#" alt="Image Preview" class="image-preview"/>
-                        </div>
+        <!-- Main Form -->
+        <form action="/openai" method="post" class="resume-form" enctype="multipart/form-data" id="resumeForm">
+            <!-- Personal Details Card -->
+            <div class="form-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-circle"></i>
                     </div>
-                </fieldset>
-
-                <fieldset class="form-section">
-                    <legend>Contact Information</legend>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required placeholder="e.g. jane.doe@example.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="text" id="phone" name="phone" required placeholder="e.g. (123) 456-7890">
-                        </div>
-                        <div class="form-group">
-                            <label for="location">Location</label>
-                            <input type="text" id="location" name="location" required placeholder="e.g. San Francisco, CA">
-                        </div>
-                        <div class="form-group">
-                            <label for="linkedin">LinkedIn URL</label>
-                            <input type="text" id="linkedin" name="linkedin" placeholder="e.g. linkedin.com/in/janedoe">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="website">Website/Portfolio</label>
-                            <input type="text" id="website" name="website" placeholder="e.g. www.janedoe.com">
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-section">
-                    <legend>Professional Profile</legend>
-                    <div class="form-row">
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="summary">Professional Summary</label>
-                            <textarea id="summary" name="summary" rows="4" placeholder="A brief summary of your career, skills, and goals."></textarea>
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="skills">Skills (comma-separated)</label>
-                            <input type="text" id="skills" name="skills" required placeholder="e.g. Python, JavaScript, Project Management">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="education">Education</label>
-                            <textarea id="education" name="education" rows="4" required placeholder="e.g. B.S. in Computer Science - University of California, Berkeley (2014-2018)"></textarea>
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="experience">Work Experience</label>
-                            <textarea id="experience" name="experience" rows="6" required placeholder="Enter each position on a new line. e.g. Software Engineer - Google (2018-Present)"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="certifications">Certifications/Licenses</label>
-                            <input type="text" id="certifications" name="certifications" placeholder="e.g. AWS Certified Solutions Architect">
-                        </div>
-                        <div class="form-group">
-                            <label for="activities">Activities/Organizations</label>
-                            <input type="text" id="activities" name="activities" placeholder="e.g. Member, ACM">
-                        </div>
-                    </div>
-                </fieldset>
-
-                <div class="form-submit-group">
-                    <button class="clr-btn" type="submit" style="width: 250px;">Generate Resume</button>
+                    <h3>Personal Details</h3>
+                    <p>Basic information about yourself</p>
                 </div>
-            </form>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">
+                                <i class="fas fa-user"></i>
+                                Full Name
+                            </label>
+                            <input type="text" id="name" name="name" required 
+                                   placeholder="e.g. Taher Bohra">
+                            <div class="form-hint">Enter your full legal name</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="headline">
+                                <i class="fas fa-bullhorn"></i>
+                                Professional Headline
+                            </label>
+                            <input type="text" id="headline" name="headline" required 
+                                   placeholder="e.g. Senior Software Engineer | AI Specialist">
+                            <div class="form-hint">Your current role or desired position</div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="profile_image">
+                                <i class="fas fa-camera"></i>
+                                Profile Picture (Optional)
+                            </label>
+                            <div class="file-upload-container">
+                                <div class="file-upload-area" id="dropArea">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop your photo here or click to browse</p>
+                                    <span class="file-info">JPG, PNG or GIF (Max 5MB)</span>
+                                    <input type="file" id="profile_image" name="profile_image" 
+                                           accept="image/png, image/jpeg, image/gif"
+                                           class="file-input">
+                                </div>
+                                <div class="image-preview-container">
+                                    <img id="imagePreview" src="#" alt="Preview" class="image-preview">
+                                    <button type="button" class="remove-image" onclick="removeImage()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information Card -->
+            <div class="form-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-address-book"></i>
+                    </div>
+                    <h3>Contact Information</h3>
+                    <p>How employers can reach you</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="email">
+                                <i class="fas fa-envelope"></i>
+                                Email Address
+                            </label>
+                            <input type="email" id="email" name="email" required 
+                                   placeholder="e.g. taher.bohra@example.com">
+                            <div class="form-hint">Use a professional email address</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </label>
+                            <input type="text" id="phone" name="phone" required 
+                                   placeholder="e.g. +91 1234567890">
+                            <div class="form-hint">Include country code</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Location
+                            </label>
+                            <input type="text" id="location" name="location" required 
+                                   placeholder="e.g. NIBM Pune, India">
+                            <div class="form-hint">City, State, Country</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="linkedin">
+                                <i class="fab fa-linkedin"></i>
+                                LinkedIn URL
+                            </label>
+                            <input type="text" id="linkedin" name="linkedin" 
+                                   placeholder="e.g. linkedin.com/in/taher-bohra9">
+                            <div class="form-hint">Optional but recommended</div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="website">
+                                <i class="fas fa-globe"></i>
+                                Website/Portfolio
+                            </label>
+                            <input type="text" id="website" name="website" 
+                                   placeholder="e.g. https://www.example.com">
+                            <div class="form-hint">Your personal website or online portfolio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Profile Card -->
+            <div class="form-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Professional Profile</h3>
+                    <p>Your career story and expertise</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="summary">
+                                <i class="fas fa-file-alt"></i>
+                                Professional Summary
+                            </label>
+                            <textarea id="summary" name="summary" rows="4" 
+                                      placeholder="Briefly describe your professional background, key achievements, and career goals..."></textarea>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb"></i>
+                                Tip: Focus on your unique value proposition
+                            </div>
+                            <div class="char-counter">
+                                <span id="summaryChars">0</span>/500 characters
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="skills">
+                                <i class="fas fa-tools"></i>
+                                Skills & Expertise
+                            </label>
+                            <div class="skills-input-container">
+                                <input type="text" id="skills" name="skills" required 
+                                       placeholder="Add skills separated by commas (e.g., Python, JavaScript, Project Management)">
+                                <button type="button" class="skills-hint-btn" onclick="showSkillsHint()">
+                                    <i class="fas fa-question-circle"></i>
+                                </button>
+                            </div>
+                            <div class="skills-tags" id="skillsTags">
+                                <!-- Tags will be added here -->
+                            </div>
+                            <div class="form-hint">Add 5-10 key skills relevant to your target role</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="education">
+                                <i class="fas fa-graduation-cap"></i>
+                                Education
+                            </label>
+                            <textarea id="education" name="education" rows="4" required 
+                                      placeholder="Start with your highest degree first:
+• B.C.A - MIT-WPU Pune (2022-2025)
+• Diploma in Computer Science - XYZ College (2020-2022)
+"></textarea>
+                            <div class="form-hint">Include degree, institution, and years</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="experience">
+                                <i class="fas fa-history"></i>
+                                Work Experience
+                            </label>
+                            <textarea id="experience" name="experience" rows="6" required 
+                                      placeholder="Format:
+Job Title - Company Name (Start Date - End Date)
+• Key achievement or responsibility
+• Another significant contribution
+
+Senior Developer - Google (2023-Present)
+• Led a team of 5 developers
+• Improved system performance by 40%
+
+Junior Developer - Microsoft (2021-2023)
+• Developed new features
+• Fixed critical bugs"></textarea>
+                            <div class="form-hint">Use bullet points and focus on achievements with numbers when possible</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="certifications">
+                                <i class="fas fa-certificate"></i>
+                                Certifications
+                            </label>
+                            <input type="text" id="certifications" name="certifications" 
+                                   placeholder="e.g., AWS Certified Solutions Architect">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="activities">
+                                <i class="fas fa-users"></i>
+                                Activities & Organizations
+                            </label>
+                            <input type="text" id="activities" name="activities" 
+                                   placeholder="e.g., Member, ACM">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn secondary-btn" onclick="window.location.href='/'">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </button>
+                <div class="action-group">
+                    <button type="button" class="btn outline-btn" onclick="clearForm()">
+                        <i class="fas fa-redo"></i>
+                        Clear Form
+                    </button>
+                    <button type="submit" class="btn primary-btn submit-btn" id="submitBtn">
+                        <i class="fas fa-magic"></i>
+                        <span>Generate Resume with AI</span>
+                        <div class="loading-spinner"></div>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- AI Tips Sidebar -->
+        <div class="ai-tips-sidebar">
+            <div class="tips-header">
+                <i class="fas fa-robot"></i>
+                <h4>AI Tips & Suggestions</h4>
+            </div>
+            <div class="tips-content">
+                <div class="tip active" data-field="name">
+                    <h5><i class="fas fa-user"></i> Name Format</h5>
+                    <p>Use your full legal name as it appears on official documents.</p>
+                </div>
+                <div class="tip" data-field="headline">
+                    <h5><i class="fas fa-bullhorn"></i> Headline Impact</h5>
+                    <p>Include your primary role and a key specialization for better visibility.</p>
+                </div>
+                <div class="tip" data-field="summary">
+                    <h5><i class="fas fa-file-alt"></i> Summary Length</h5>
+                    <p>Keep your summary between 50-200 words. Focus on achievements, not duties.</p>
+                </div>
+                <div class="tip" data-field="experience">
+                    <h5><i class="fas fa-history"></i> Experience Format</h5>
+                    <p>Use the STAR method: Situation, Task, Action, Result for each bullet point.</p>
+                </div>
+                <div class="tip" data-field="skills">
+                    <h5><i class="fas fa-tools"></i> Skills Selection</h5>
+                    <p>Include both technical and soft skills. Prioritize those mentioned in job descriptions.</p>
+                </div>
+            </div>
         </div>
     </main>
 
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h3>Resume Generated Successfully!</h3>
+                <p>Your AI-powered resume is ready</p>
+            </div>
+            <div class="modal-body">
+                <p>Your resume has been created and saved. You can now:</p>
+                <div class="modal-actions">
+                    <button class="btn outline-btn" onclick="printResume()">
+                        <i class="fas fa-print"></i>
+                        Print Resume
+                    </button>
+                    <button class="btn primary-btn" onclick="downloadResume()">
+                        <i class="fas fa-download"></i>
+                        Download PDF
+                    </button>
+                    <button class="btn secondary-btn" onclick="viewResume()">
+                        <i class="fas fa-eye"></i>
+                        View Online
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function(){
-                const output = document.getElementById('imagePreview');
-                output.src = reader.result;
-                output.style.display = 'block';
-            };
-            reader.readAsDataURL(event.target.files[0]);
+        // Image upload functionality
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.querySelector('.file-input');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewContainer = document.querySelector('.image-preview-container');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('highlight');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+        dropArea.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', handleFiles);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({target: {files}});
+        }
+
+        function handleFiles(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size should be less than 5MB');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.style.display = 'flex';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            imagePreview.src = '#';
+            previewContainer.style.display = 'none';
+            fileInput.value = '';
+        }
+
+        // Skills tags functionality
+        const skillsInput = document.getElementById('skills');
+        const skillsTags = document.getElementById('skillsTags');
+
+        skillsInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const skill = this.value.trim().replace(',', '');
+                if (skill) {
+                    addSkillTag(skill);
+                    this.value = '';
+                    updateSkillsInput();
+                }
+            }
+        });
+
+        function addSkillTag(skill) {
+            if (skill) {
+                const tag = document.createElement('div');
+                tag.className = 'skill-tag';
+                tag.innerHTML = `
+                    ${skill}
+                    <button type="button" onclick="removeSkillTag(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                skillsTags.appendChild(tag);
+            }
+        }
+
+        function removeSkillTag(button) {
+            button.closest('.skill-tag').remove();
+            updateSkillsInput();
+        }
+
+        function updateSkillsInput() {
+            const tags = Array.from(skillsTags.querySelectorAll('.skill-tag'))
+                .map(tag => tag.textContent.trim().replace('×', ''));
+            skillsInput.value = tags.join(', ');
+        }
+
+        // Character counter
+        const summaryTextarea = document.getElementById('summary');
+        const summaryChars = document.getElementById('summaryChars');
+
+        summaryTextarea.addEventListener('input', function() {
+            summaryChars.textContent = this.value.length;
+        });
+
+        // Form submission
+        const form = document.getElementById('resumeForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        form.addEventListener('submit', function(e) {
+            // Update skills input before submission
+            updateSkillsInput();
+            
+            // Show loading state
+            submitBtn.classList.add('loading');
+            progressBar.style.display = 'block';
+            
+            // Simulate progress
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 90) {
+                    clearInterval(interval);
+                } else {
+                    width += 10;
+                    progressBar.querySelector('.progress-fill').style.width = width + '%';
+                }
+            }, 200);
+        });
+
+        // AI tips interaction
+        const tips = document.querySelectorAll('.tip');
+        const formGroups = document.querySelectorAll('.form-group');
+
+        formGroups.forEach(group => {
+            const input = group.querySelector('input, textarea');
+            if (input) {
+                input.addEventListener('focus', function() {
+                    const fieldName = this.id;
+                    tips.forEach(tip => tip.classList.remove('active'));
+                    const matchingTip = document.querySelector(`.tip[data-field="${fieldName}"]`);
+                    if (matchingTip) {
+                        matchingTip.classList.add('active');
+                    }
+                });
+            }
+        });
+
+        // Clear form function
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all form data?')) {
+                form.reset();
+                skillsTags.innerHTML = '';
+                removeImage();
+                summaryChars.textContent = '0';
+            }
+        }
+
+        function showSkillsHint() {
+            alert('💡 Skill Suggestions:\n\n• Include technical skills (Python, React, AWS)\n• Add soft skills (Leadership, Communication)\n• Mention tools you use (Git, Jira, Docker)\n• List certifications if relevant\n• Add industry-specific skills');
+        }
+
+        // Demo functions (for modal)
+        function printResume() {
+            alert('Print functionality would open the resume in print view');
+        }
+
+        function downloadResume() {
+            alert('Download would start a PDF download');
+        }
+
+        function viewResume() {
+            window.location.href = '/resume/list';
         }
     </script>
 </body>
 </html>
-

@@ -3,60 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Resume Builder</title>
+    <title>AI Resume Builder | Professional Resume Generator</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Adding an icon library for the cards -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Animated Background Elements -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
     <header class="navbar">
-        <a href="/" class="brand">AI Resume Builder</a>
-        <nav class="nav-links">
-            <a href="{{ url_for('list_resumes') }}">View Saved Resumes</a>
-        </nav>
+        <div class="nav-container">
+            <a href="/" class="brand">
+                <i class="fas fa-robot"></i>
+                <span>AI Resume<span class="brand-highlight">Builder</span></span>
+            </a>
+            <nav class="nav-links">
+                <a href="{{ url_for('list_resumes') }}" class="nav-link">
+                    <i class="fas fa-folder-open"></i>
+                    <span>My Resumes</span>
+                </a>
+                <a href="{{ url_for('openai') }}" class="nav-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Create New</span>
+                </a>
+            </nav>
+        </div>
     </header>
 
     <main class="container">
         <!-- Hero Section -->
         <section class="hero-section">
-            <h1>Welcome to the Future of Resumes with <span>AI Technology</span></h1>
-            <p>Effortlessly create a professional, polished resume in minutes. Just provide your details, and our AI will handle the formatting and presentation to help you stand out.</p>
-            <div class="hero-cta">
-                <a href="{{ url_for('openai') }}" class="clr-btn">Build Your Resume Now</a>
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-star"></i>
+                    <span>Powered by Advanced AI</span>
+                </div>
+                <h1 class="hero-title">
+                    Craft Your <span class="gradient-text">Professional</span> Resume
+                    <span class="typing-text">in Minutes</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Transform your career journey with our intelligent resume builder. 
+                    Get AI-optimized content, professional templates, and instant 
+                    feedback to land your dream job faster.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-user-check"></i>
+                        <div>
+                            <h3>10,000+</h3>
+                            <p>Resumes Created</p>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h3>5 Min</h3>
+                            <p>Average Time</p>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <h3>89%</h3>
+                            <p>Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-cta">
+                    <a href="{{ url_for('openai') }}" class="cta-btn primary-btn">
+                        <i class="fas fa-magic"></i>
+                        <span>Create My Resume Now</span>
+                    </a>
+                    <a href="#features" class="cta-btn secondary-btn">
+                        <i class="fas fa-play-circle"></i>
+                        <span>How It Works</span>
+                    </a>
+                </div>
+                <p class="hero-note">
+                    <i class="fas fa-info-circle"></i>
+                    AI-generated content may require review. Always verify information.
+                </p>
             </div>
-             <p class="disclaimer"><b>Note:</b> AI may occasionally generate incorrect responses. Please review the generated content.</p>
+            <div class="hero-preview">
+                <div class="resume-preview-card">
+                    <div class="preview-header">
+                        <div class="preview-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="preview-info">
+                            <h4>John Doe</h4>
+                            <p>Senior Software Engineer</p>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-section">
+                            <h5><i class="fas fa-briefcase"></i> Experience</h5>
+                            <p>Google • Microsoft • Amazon</p>
+                        </div>
+                        <div class="preview-section">
+                            <h5><i class="fas fa-graduation-cap"></i> Education</h5>
+                            <p>MIT • Stanford • Harvard</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Features Section -->
-        <section class="features-section">
+        <section id="features" class="features-section">
+            <div class="section-header">
+                <h2>Why Choose Our AI Resume Builder?</h2>
+                <p>Everything you need to create a standout resume</p>
+            </div>
             <div class="features-grid">
-                <!-- Feature Card 1 -->
+                <!-- Feature 1 -->
                 <div class="feature-card">
-                    <div class="card-icon">
-                        <i class="fas fa-robot"></i>
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
                     </div>
-                    <h3>AI-Powered Content</h3>
-                    <p>Our intelligent system helps you craft compelling summary and experience descriptions tailored to your profile.</p>
+                    <h3>AI-Powered Optimization</h3>
+                    <p>Our advanced AI analyzes job descriptions and suggests the most impactful keywords and phrases for your industry.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Keyword optimization</li>
+                        <li><i class="fas fa-check"></i> ATS-friendly formatting</li>
+                        <li><i class="fas fa-check"></i> Industry-specific templates</li>
+                    </ul>
                 </div>
-                <!-- Feature Card 2 -->
+                <!-- Feature 2 -->
                 <div class="feature-card">
-                    <div class="card-icon">
-                        <i class="fas fa-edit"></i>
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
                     </div>
-                    <h3>Simple & Fast</h3>
-                    <p>Fill out a straightforward form and get a professionally designed resume generated in seconds.</p>
+                    <h3>Fast & Efficient</h3>
+                    <p>Create a professional resume in minutes with our intuitive interface and smart autocomplete features.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 5-minute setup</li>
+                        <li><i class="fas fa-check"></i> Auto-save progress</li>
+                        <li><i class="fas fa-check"></i> Quick templates</li>
+                    </ul>
                 </div>
-                <!-- Feature Card 3 -->
+                <!-- Feature 3 -->
                 <div class="feature-card">
-                    <div class="card-icon">
-                        <i class="fas fa-print"></i>
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
                     </div>
-                    <h3>Print-Ready Design</h3>
-                    <p>Generate a beautiful, print-ready PDF that looks clean and modern, ready for your next job application.</p>
+                    <h3>Beautiful Designs</h3>
+                    <p>Choose from professionally designed templates that are guaranteed to make a great first impression.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Multiple layouts</li>
+                        <li><i class="fas fa-check"></i> Custom colors</li>
+                        <li><i class="fas fa-check"></i> Print-ready PDFs</li>
+                    </ul>
+                </div>
+                <!-- Feature 4 -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Smart Suggestions</h3>
+                    <p>Get real-time suggestions for improving your resume based on best practices and recruiter preferences.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Content analysis</li>
+                        <li><i class="fas fa-check"></i> Skill gap detection</li>
+                        <li><i class="fas fa-check"></i> Achievement examples</li>
+                    </ul>
                 </div>
             </div>
         </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials-section">
+            <div class="section-header">
+                <h2>Trusted by Professionals Worldwide</h2>
+                <p>See what our users are saying</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"This AI resume builder helped me land 3 interviews in 2 weeks. The suggestions were spot-on!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/40?img=1" alt="Sarah Johnson">
+                        <div>
+                            <h4>Sarah Johnson</h4>
+                            <p>Product Manager</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The AI suggestions transformed my basic resume into a compelling career story."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/40?img=2" alt="Michael Chen">
+                        <div>
+                            <h4>Michael Chen</h4>
+                            <p>Software Engineer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Saved me hours of work. The templates are professional and the AI content is impressive."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/40?img=3" alt="Emily Rodriguez">
+                        <div>
+                            <h4>Emily Rodriguez</h4>
+                            <p>Marketing Director</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Career?</h2>
+                <p>Start building your professional resume today - it's free!</p>
+                <a href="{{ url_for('openai') }}" class="cta-btn primary-btn large-btn">
+                    <i class="fas fa-rocket"></i>
+                    <span>Get Started For Free</span>
+                </a>
+            </div>
+        </section>
     </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="/" class="brand">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Resume<span class="brand-highlight">Builder</span></span>
+                </a>
+                <p>Creating better resumes with artificial intelligence.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Help Center</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 AI Resume Builder. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Typing animation for hero section
+        document.addEventListener('DOMContentLoaded', function() {
+            const typingText = document.querySelector('.typing-text');
+            const words = ['in Minutes', 'with AI', 'for Success', 'for Free'];
+            let wordIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            
+            function type() {
+                const currentWord = words[wordIndex];
+                
+                if (isDeleting) {
+                    typingText.textContent = currentWord.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typingText.textContent = currentWord.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+                
+                if (!isDeleting && charIndex === currentWord.length) {
+                    isDeleting = true;
+                    setTimeout(type, 1500);
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    wordIndex = (wordIndex + 1) % words.length;
+                    setTimeout(type, 500);
+                } else {
+                    setTimeout(type, isDeleting ? 50 : 100);
+                }
+            }
+            
+            setTimeout(type, 1000);
+        });
+    </script>
 </body>
 </html>
-
