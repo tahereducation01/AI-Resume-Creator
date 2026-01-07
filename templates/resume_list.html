@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Resumes</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">AI Resume Builder</a>
+        <nav class="nav-links">
+            <a href="{{ url_for('openai') }}">Build New Resume</a>
+        </nav>
+    </header>
+    <main class="container">
+        <div class="page-header">
+            <h1>Saved Resumes</h1>
+        </div>
+
+        <div class="table-responsive">
+            <table id="resumesTable" class="resume-table display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Headline</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resume in resumes %}
+                    <tr id="resume-row-{{ resume.id }}">
+                        <td>{{ resume.id }}</td>
+                        <td>{{ resume.name }}</td>
+                        <td>{{ resume.email }}</td>
+                        <td>{{ resume.headline }}</td>
+                        <td>{{ resume.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td class="actions-cell">
+                            <a href="{{ url_for('view_resume', resume_id=resume.id) }}" class="clr-btn btn-view">View</a>
+                            <button class="clr-btn btn-danger" onclick="deleteResume({{ resume.id }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#resumesTable').DataTable({
+                "order": [[ 0, "desc" ]],
+                responsive: true,
+                "language": {
+                    "emptyTable": "No resumes found. Start by building a new one!"
+                }
+            });
+        });
+
+        function deleteResume(resumeId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/resume/delete/${resumeId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Deleted!', 'The resume has been deleted.', 'success');
+                            // Remove the row from the table
+                            $('#resumesTable').DataTable().row(`#resume-row-${resumeId}`).remove().draw();
+                        } else {
+                            Swal.fire('Error!', data.message || 'Could not delete the resume.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error!', 'An error occurred during the request.', 'error');
+                    });
+                }
+            })
+        }
+    </script>
+</body>
+</html>
+

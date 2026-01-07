@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Builder</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Adding an icon library for the cards -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">AI Resume Builder</a>
+        <nav class="nav-links">
+            <a href="{{ url_for('list_resumes') }}">View Saved Resumes</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1>Welcome to the Future of Resumes with <span>AI Technology</span></h1>
+            <p>Effortlessly create a professional, polished resume in minutes. Just provide your details, and our AI will handle the formatting and presentation to help you stand out.</p>
+            <div class="hero-cta">
+                <a href="{{ url_for('openai') }}" class="clr-btn">Build Your Resume Now</a>
+            </div>
+             <p class="disclaimer"><b>Note:</b> AI may occasionally generate incorrect responses. Please review the generated content.</p>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="features-grid">
+                <!-- Feature Card 1 -->
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered Content</h3>
+                    <p>Our intelligent system helps you craft compelling summary and experience descriptions tailored to your profile.</p>
+                </div>
+                <!-- Feature Card 2 -->
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3>Simple & Fast</h3>
+                    <p>Fill out a straightforward form and get a professionally designed resume generated in seconds.</p>
+                </div>
+                <!-- Feature Card 3 -->
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <h3>Print-Ready Design</h3>
+                    <p>Generate a beautiful, print-ready PDF that looks clean and modern, ready for your next job application.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+
